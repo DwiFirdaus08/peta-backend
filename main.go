@@ -3,41 +3,34 @@ package main
 import (
 	"log"
 
-	// IMPORT PACKAGE LOKAL KITA:
-	"backend-peta/config" // Mengambil fungsi koneksi database
-	"backend-peta/model"  // Mengambil struct Location
+	"backend-peta/config"
+	"backend-peta/model"
 
-	// IMPORT LIBRARY PIHAK KETIGA:
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-	"github.com/joho/godotenv" // Library untuk baca file .env
+	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func main() {
-	// 1. SETUP ENVIRONMENT & DATABASE
-	
-	// Load file .env dulu agar Config bisa baca MONGO_URI
+	// 1. LOAD .env
 	if err := godotenv.Load(); err != nil {
 		log.Println("Info: Tidak menemukan file .env, sistem menggunakan default setting.")
 	}
-
-	// Panggil fungsi ConnectDB dari folder config.
-	// Fungsi ini sudah mengembalikan Collection 'locations' siap pakai.
 	db := config.ConnectDB()
 
-	// 2. SETUP FIBER
+	
 	app := fiber.New()
 
-	// Enable CORS (Agar frontend beda port bisa akses backend)
+	
 	app.Use(cors.New())
 
 	// --- API CRUD ---
 
-	// 1. READ (Ambil Semua Data)
+	// 1. READ 
 	app.Get("/api/locations", func(c *fiber.Ctx) error {
-		var locations []model.Location // Menggunakan struct dari folder model
+		var locations []model.Location 
 		
 		cursor, err := db.Find(c.Context(), bson.M{})
 		if err != nil {
@@ -51,7 +44,7 @@ func main() {
 		return c.JSON(locations)
 	})
 
-	// 2. CREATE (Tambah Data Baru)
+	// 2. CREATE 
 	app.Post("/api/locations", func(c *fiber.Ctx) error {
 		var loc model.Location
 		if err := c.BodyParser(&loc); err != nil {
@@ -68,7 +61,7 @@ func main() {
 		return c.JSON(loc)
 	})
 
-	// 3. UPDATE (Edit Data)
+	// 3. UPDATE 
 	app.Put("/api/locations/:id", func(c *fiber.Ctx) error {
 		idHex := c.Params("id")
 		objID, err := primitive.ObjectIDFromHex(idHex)
@@ -98,7 +91,7 @@ func main() {
 		return c.JSON(updateData)
 	})
 
-	// 4. DELETE (Hapus Data)
+	// 4. DELETE 
 	app.Delete("/api/locations/:id", func(c *fiber.Ctx) error {
 		idHex := c.Params("id")
 		objID, _ := primitive.ObjectIDFromHex(idHex)

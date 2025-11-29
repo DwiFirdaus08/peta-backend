@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os" 
+	"os"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -18,7 +18,6 @@ func ConnectDB() *mongo.Collection {
 	dbName := os.Getenv("DB_NAME")
 	colName := os.Getenv("COLLECTION_NAME")
 
-	// Fallback/Cadangan jika .env kosong (Opsional tapi bagus)
 	if mongoURI == "" {
 		mongoURI = "mongodb://localhost:27017"
 	}

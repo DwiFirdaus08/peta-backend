@@ -1,7 +1,5 @@
 package model
 
-// Location dipindahkan ke sini agar bisa di-import
-// Field harus diawali Huruf Besar agar bisa diakses (Exported)
 type Location struct {
 	ID   string  `json:"id,omitempty" bson:"_id,omitempty"`
 	Name string  `json:"name" bson:"name"`
