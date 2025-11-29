@@ -18,19 +18,20 @@ func main() {
 	if err := godotenv.Load(); err != nil {
 		log.Println("Info: Tidak menemukan file .env, sistem menggunakan default setting.")
 	}
+
+	// 2. KONEKSI DB
 	db := config.ConnectDB()
 
-	
 	app := fiber.New()
 
-	
+	// 3. MIDDLEWARE
 	app.Use(cors.New())
 
 	// --- API CRUD ---
 
 	// 1. READ 
 	app.Get("/api/locations", func(c *fiber.Ctx) error {
-		var locations []model.Location 
+		var locations []model.Location
 		
 		cursor, err := db.Find(c.Context(), bson.M{})
 		if err != nil {
@@ -74,11 +75,12 @@ func main() {
 			return c.Status(400).SendString(err.Error())
 		}
 
-		// Kita hanya update field yang dikirim (Name & Desc)
+		// PENTING: Update field 'category' juga di sini
 		update := bson.M{
 			"$set": bson.M{
-				"name": updateData.Name,
-				"desc": updateData.Desc,
+				"name":     updateData.Name,
+				"desc":     updateData.Desc,
+				"category": updateData.Category, 
 			},
 		}
 
@@ -87,6 +89,7 @@ func main() {
 			return c.Status(500).SendString(err.Error())
 		}
 		
+		// Kembalikan data yang sudah diupdate ke frontend
 		updateData.ID = idHex
 		return c.JSON(updateData)
 	})
