@@ -7,6 +7,8 @@ require (
 	go.mongodb.org/mongo-driver v1.17.6
 )
 
+require github.com/gofiber/adaptor/v2 v2.2.1
+
 require (
 	github.com/andybalholm/brotli v1.1.0 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
